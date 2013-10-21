@@ -1,0 +1,1 @@
+dojo.provide("dojo.nls.dojo_tr");dojo.provide("dijit.nls.loading");dijit.nls.loading._built=true;dojo.provide("dijit.nls.loading.tr");dijit.nls.loading.tr={"loadingState":"Yükleniyor...","errorState":"Üzgünüz, bir hata oluştu"};dojo.provide("dojox.grid.nls.grid");dojox.grid.nls.grid._built=true;dojo.provide("dojox.grid.nls.grid.tr");dojox.grid.nls.grid.tr={"noData":"No Data"};

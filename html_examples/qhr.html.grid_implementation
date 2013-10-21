@@ -1,0 +1,468 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+	<title>DataGrid Basic Editing</title>
+	<style type="text/css">
+		@import "dijit/themes/tundra/tundra.css";
+		@import "dojox/grid/resources/Grid.css";
+		@import "dojox/grid/resources/tundraGrid.css";
+		@import "dojo/resources/dojo.css";
+		@import "general.css";
+	</style>
+	<script type="text/javascript" src="dojo/dojo.js" djConfig="isDebug:true , parseOnLoad: true"></script>
+	<script type="text/javascript">
+       		dojo.require("dojo.parser");
+		dojo.require("dojo.data.ItemFileWriteStore");
+		dojo.require("dojox.grid.DataGrid");
+		dojo.require("dijit.form.Textarea");
+       		dojo.require("dijit.form.Button");
+       		dojo.require("dijit.Dialog");
+       		dojo.require("dijit.form.TextBox");
+       		dojo.require("dijit.form.CheckBox");
+       		dojo.require("dijit.form.FilteringSelect");
+		dojo.require("dojo.dnd.Source");
+
+		var jsonStore = new dojo.data.ItemFileWriteStore({ url: "json/plans.json" });
+        var grid = null;
+
+		dojo.addOnLoad(function(){
+			var layout= [
+				{ field: "active", width: "70px", name: "Active", editable: true,
+				  type: dojox.grid.cells.Select, options: [ 'active', 'inactive' ] },
+				{ field: "plan_name", width: "150px", name: "Plan Name" },
+				{ field: "risk_factors", width: "100px", name: "Risk Factors", formatter: riskFormatter},
+				{ field: "intervention", width: "150px", name: "Interventions", formatter: interventionFormatter},
+				{ field: "goals", width: "150px", name: "Goals", formatter: goalsFormatter},
+				{ field: "meds", width: "150px", name: "Medications", formatter: medFormatter},
+				{ field: "owner", width: "100px", name: "Plan Owner", formatter: ownerFormatter}
+			];
+
+			grid = new dojox.grid.DataGrid({
+				query: { planny_num: '*' },
+				store: jsonStore,
+				structure: layout,
+				rowsPerPage: 20,
+				selectionMode: 'single'
+			}, 'gridNode');
+		});
+
+       function medFormatter(my_arg, row_id){
+		var datarow = grid.getItem(row_id);
+		var planny_id = datarow.planny_num;
+		
+		med_ul = "<div id='meds_"+planny_id+"'><div class='med_container'>";
+    		med_ul = med_ul + "<h2>Plan Medications</h2>";
+        	med_ul = med_ul + "<ul dojoType='dojo.dnd.Source' id='meds_"+planny_id+"' class='container'><li class='dojoDndItem'>Test</li>";
+        	med_ul = med_ul + "</ul></div></div>";
+
+		
+		return_me = med_ul+"<br><br><br><br><br>";
+		return return_me;
+	}
+
+
+
+       function riskFormatter(my_arg, row_id){
+		var datarow = grid.getItem(row_id);
+		var planny_id = datarow.planny_num;		
+		return_me = my_arg+"<br><button dojoType='dijit.form.Button' onclick=\"dijit.byId('risk').show();dojo.byId('risk_planny_id').value='"+planny_id+"'\">Edit</button>";
+		return return_me;
+	}
+
+       function ownerFormatter(my_arg, row_id){
+		var datarow = grid.getItem(row_id);
+		var planny_id = datarow.planny_num;		
+		return_me = my_arg+"<br><button dojoType='dijit.form.Button' onclick=\"dijit.byId('owner').show();dojo.byId('owner_planny_id').value='"+planny_id+"'\">Edit</button>";
+		return return_me;
+	}
+
+       function goalsFormatter(my_arg, row_id){
+		var datarow = grid.getItem(row_id);
+		var planny_id = datarow.planny_num;		
+		return_me = my_arg+"<br><button dojoType='dijit.form.Button' onclick=\"dijit.byId('goal').show();dojo.byId('goal_planny_id').value='"+planny_id+"';dijit.byId('goal_text').setValue('"+my_arg+"');\">Edit</button>";
+		return return_me;
+	}
+
+       function interventionFormatter(my_arg, row_id){
+		var datarow = grid.getItem(row_id);
+		var planny_id = datarow.planny_num;		
+		return_me = my_arg+"<br><button dojoType='dijit.form.Button' onclick=\"dijit.byId('intervention').show();dojo.byId('intervention_planny_id').value='"+planny_id+"';dijit.byId('intervention_text').setValue('"+my_arg+"');\">Edit</button>";
+		return return_me;
+	}
+
+        function submitForm(my_data,my_form) {
+
+		json_data = dojo.toJson(my_data);
+
+		alert(' I get here '+json_data);
+
+                dojo.xhrPost ({
+                        // The page that parses the POST request
+                        url: '/sandbox/dojo/post.php',
+               
+                        // Name of the Form we want to submit
+                        //form: 'intervention',
+              		//is not actually needed since you have the content coming in :)
+
+
+			content: { message: json_data},
+ 
+                        // Loads this function if everything went ok
+                        load: function (data) {
+                                // Put the data into the appropriate <div>
+                                dojo.byId('post_response').innerHTML = data;
+                        },
+                        // Call this function if an error happened
+                        error: function (error) {
+                                console.error ('Error: ', error);
+				}
+            });
+        }
+
+
+
+ 
+/*
+
+  x	1. Figure out how to post the results of the dialoug to the server...
+	2. Create a hidden table for each of the editable text fields including responsible doctor. 
+	3. Create a Risk Factors checkbox field for the risk factors
+	5. Create display of the CCR above the plans with an eye towards draggability.
+	6. Add + buttons to the display of the problems... in order to create plans automatically from them
+	7. Create the ability to drag and drop medications
+	8. Create the ability to drag and drop any CCR object to Risk Factors 
+	9. Quickly build out a zend backend to save the plan data. 
+
+*/
+
+
+	</script>
+</head>
+<body class="tundra">
+
+	<div id='post_response'></div>
+
+<table><tr>
+<td valign='top'>
+<div id="store">
+    <div class="problem_container">
+        <h2>Problems</h2>
+        <ul dojoType="dojo.dnd.Source" id="problems" class="container">
+            <li class="dojoDndItem">Asthma</li>
+            <li class="dojoDndItem">Diabetes</li>
+            <li class="dojoDndItem">Alcholic</li>
+            <li class="dojoDndItem">Some other problem</li>
+            <li class="dojoDndItem">Lots of problems</li>
+        </ul>
+    </div>
+</div>
+</td>
+<td valign='top'>
+<div id="procs">
+    <div class="wishlistContainer">
+        <h2>Procedures</h2>
+        <ul id="procsNode" class="container">
+            <li class="dojoDndItem">Proc 1</li>
+            <li class="dojoDndItem">Proc 2</li>
+            <li class="dojoDndItem">Proc 3</li>
+            <li class="dojoDndItem">Proc 4</li>
+            <li class="dojoDndItem">Proc 5</li>
+        </ul>
+    </div>
+</div>
+</td>
+<td valign='top'>
+<div id="results">
+    <div class="wishlistContainer">
+        <h2>Results</h2>
+        <ul id="resultsNode" class="container">
+            <li class="dojoDndItem">Result 1</li>
+            <li class="dojoDndItem">Result 2</li>
+            <li class="dojoDndItem">Result 3</li>
+            <li class="dojoDndItem">Result 4</li>
+            <li class="dojoDndItem">Result 5</li>
+        </ul>
+    </div>
+</div>
+</td>
+<td valign='top'>
+<div id="vitals">
+    <div class="wishlistContainer">
+        <h2>Vital Signs</h2>
+        <ul id="vitalNode" class="container">
+            <li class="dojoDndItem">Vital</li>
+            <li class="dojoDndItem">Vital 2</li>
+            <li class="dojoDndItem">Vital 3</li>
+            <li class="dojoDndItem">Vital 4</li>
+            <li class="dojoDndItem">Vital 5</li>
+        </ul>
+    </div>
+</div>
+</td>
+<td valign='top'>
+<div id="meds">
+    <div class="wishlistContainer">
+        <h2>Medications</h2>
+        <ul id="medsNode" class="container">
+            <li class="dojoDndItem">Lipitor 40mg once daily</li>
+            <li class="dojoDndItem">Aspirin 40 mg once daily and as needed</li>
+            <li class="dojoDndItem">Viagra as 'needed'</li>
+        </ul>
+    </div>
+</div>
+</td>
+
+
+</tr>
+
+
+
+
+
+
+<div dojoType="dijit.Dialog" id="intervention" title="Intervention" 
+	execute="submitForm(arguments[0]);">
+
+    <table>
+        <tr>
+        <td><label for="name">Edit Intervention </label></td>
+                <td>
+			<textarea dojoType='dijit.form.Textarea' style='width:300px' name='intervention_text' id='intervention_text'></textarea>
+		</td>
+        </tr>
+        <tr>
+                <td colspan="2" align="center">
+			<input dojoType="dijit.form.TextBox" type='hidden' name='intervetion_planny_id' id='intervention_planny_id' value=''>
+                        <button dojoType=dijit.form.Button type="submit" on>Save</button></td>
+        </tr>
+    </table>
+</div>
+
+
+<div dojoType="dijit.Dialog" id="goal" title="Goal" 
+	execute="submitForm(arguments[0]);">
+
+    <table>
+        <tr>
+        <td><label for="name">Edit Goal </label></td>
+                <td>
+			<textarea dojoType='dijit.form.Textarea' style='width:300px' name='goal_text' id='goal_text'></textarea>
+		</td>
+        </tr>
+        <tr>
+                <td colspan="2" align="center">
+			<input dojoType="dijit.form.TextBox" type='hidden' name='goal_planny_id' id='goal_planny_id' value=''>
+                        <button dojoType=dijit.form.Button type="submit" on>Save</button></td>
+        </tr>
+    </table>
+</div>
+
+<div dojoType="dijit.Dialog" id="owner" title="Plan Owner" 
+	execute="submitForm(arguments[0]);">
+
+    <table>
+        <tr>
+		<td><label for="owner_first">Plan Owner First Name</label></td>
+                <td>
+			<input dojoType='dijit.form.TextBox' type='text' name='owner_first' id='owner_first'>
+		</td>
+        </tr>
+        <tr>
+		<td><label for="owner_last">Plan Owner Last Name</label></td>
+                <td>
+			<input dojoType='dijit.form.TextBox' type='text' name='owner_last' id='owner_last'>
+		</td>
+        </tr>
+        <tr>
+		<td><label for="owner_phone">Plan Owner Phone</label></td>
+                <td>
+			<input dojoType='dijit.form.TextBox' type='text' name='owner_phone' id='owner_phone'>
+		</td>
+        </tr>
+        <tr>
+		<td><label for="owner_city">Plan Owner City</label></td>
+                <td>
+			<input dojoType='dijit.form.TextBox' type='text' name='owner_city' id='owner_city'>
+		</td>
+        </tr>
+
+        <tr>
+		<td><label for="owner_state">Plan Owner State</label></td>
+                <td>
+        <select dojoType="dijit.form.FilteringSelect"
+                id="owner_state"
+                name="owner_state"
+                autoComplete="false"
+                invalidMessage="Invalid state name">
+            <option value="blank"></option>
+            <option value="AL">Alabama</option>
+            <option value="AK">Alaska</option>
+            <option value="AS">American Samoa</option>
+            <option value="AZ">Arizona</option>
+            <option value="AR">Arkansas</option>
+            <option value="AE">Armed Forces Europe</option>
+            <option value="AP">Armed Forces Pacific</option>
+            <option value="AA">Armed Forces the Americas</option>
+            <option value="CA" selected>California</option>
+            <option value="CO">Colorado</option>
+            <option value="CT">Connecticut</option>
+            <option value="DE">Delaware</option>
+            <option value="DC">District of Columbia</option>
+            <option value="FM">Federated States of Micronesia</option>
+            <option value="FL">Florida</option>
+            <option value="GA">Georgia</option>
+            <option value="GU">Guam</option>
+            <option value="HI">Hawaii</option>
+            <option value="ID">Idaho</option>
+            <option value="IL">Illinois</option>
+            <option value="IN">Indiana</option>
+            <option value="IA">Iowa</option>
+            <option value="KS">Kansas</option>
+            <option value="KY">Kentucky</option>
+            <option value="LA">Louisiana</option>
+            <option value="ME">Maine</option>
+            <option value="MH">Marshall Islands</option>
+            <option value="MD">Maryland</option>
+            <option value="MA">Massachusetts</option>
+            <option value="MI">Michigan</option>
+            <option value="MN">Minnesota</option>
+            <option value="MS">Mississippi</option>
+            <option value="MO">Missouri</option>
+            <option value="MT">Montana</option>
+            <option value="NE">Nebraska</option>
+            <option value="NV">Nevada</option>
+            <option value="NH">New Hampshire</option>
+            <option value="NJ">New Jersey</option>
+            <option value="NM">New Mexico</option>
+            <option value="NY">New York</option>
+            <option value="NC">North Carolina</option>
+            <option value="ND">North Dakota</option>
+            <option value="MP">Northern Mariana Islands</option>
+            <option value="OH">Ohio</option>
+            <option value="OK">Oklahoma</option>
+            <option value="OR">Oregon</option>
+            <option value="PA">Pennsylvania</option>
+            <option value="PR">Puerto Rico</option>
+            <option value="RI">Rhode Island</option>
+            <option value="SC">South Carolina</option>
+            <option value="SD">South Dakota</option>
+            <option value="TN">Tennessee</option>
+            <option value="TX">Texas</option>
+            <option value="UT">Utah</option>
+            <option value="VT">Vermont</option>
+            <option value="VI">Virgin Islands, U.S.</option>
+            <option value="VA">Virginia</option>
+            <option value="WA">Washington</option>
+            <option value="WV">West Virginia</option>
+            <option value="WI">Wisconsin</option>
+            <option value="WY">Wyoming</option>
+        </select>
+
+		</td>
+        </tr>
+
+        <tr>
+                <td colspan="2" align="center">
+			<input dojoType="dijit.form.TextBox" type='hidden' name='owner_planny_id' id='owner_planny_id' value=''>
+                        <button dojoType=dijit.form.Button type="submit" on>OK</button></td>
+        </tr>
+    </table>
+</div>
+
+
+<div dojoType="dijit.Dialog" id="risk" title="Risk Factors" 
+	execute="submitForm(arguments[0]);">
+
+    <table>
+        <tr>
+                <td>
+		    <input id="rf_active_smoking" dojotype="dijit.form.CheckBox" name="rf_active_smoking"   value="on" type="checkbox" />
+		</td>
+        <td><label for="name">Active Smoking </label></td>
+        </tr>
+        <tr>
+                <td>
+		    <input id="rf_passive_smoking" dojotype="dijit.form.CheckBox" name="rf_passive_smoking"   value="on" type="checkbox" />
+		</td>
+        <td><label for="name">Passive Smoking </label></td>
+        </tr>
+        <tr>
+                <td>
+		    <input id="rf_family_smoking" dojotype="dijit.form.CheckBox" name="rf_family_smoking"   value="on" type="checkbox" />
+		</td>
+        <td><label for="name">Family Member Smoking </label></td>
+        </tr>
+        <tr>
+                <td>
+		    <input id="rf_low_insurance" dojotype="dijit.form.CheckBox" name="rf_low_insurance"   value="on" type="checkbox" />
+		</td>
+        <td><label for="name">Low or Now Insurance </label></td>
+        </tr>
+        <tr>
+                <td>
+		    <input id="rf_economic" dojotype="dijit.form.CheckBox" name="rf_economic"   value="on" type="checkbox" />
+		</td>
+        <td><label for="name">Economic </label></td>
+        </tr>
+        <tr>
+                <td>
+		    <input id="rf_refusal" dojotype="dijit.form.CheckBox" name="rf_refusal"   value="on" type="checkbox" />
+		</td>
+        <td><label for="name">Patient Refusal </label></td>
+        </tr>
+        <tr>
+                <td>
+		    <input id="rf_not_indicated" dojotype="dijit.form.CheckBox" name="rf_not_indicated"   value="on" type="checkbox" />
+		</td>
+        <td><label for="name"> Protocol not indicated/contra-indicated  </label></td>
+        </tr>
+        <tr>
+                <td>
+		    <input id="rf_family_history" dojotype="dijit.form.CheckBox" name="rf_family_history"   value="on" type="checkbox" />
+		</td>
+        <td><label for="name">Family History </label></td>
+        </tr>
+        <tr>
+                <td>
+		    <input id="rf_obesity" dojotype="dijit.form.CheckBox" name="rf_obesity"   value="on" type="checkbox" />
+		</td>
+        <td><label for="name">Obesity </label></td>
+        </tr>
+        <tr>
+                <td>
+		    <input id="rf_drug_abuse" dojotype="dijit.form.CheckBox" name="rf_drug_abuse"   value="on" type="checkbox" />
+		</td>
+        <td><label for="name">Drug Abuse </label></td>
+        </tr>
+        <tr>
+                <td>
+		    <input id="rf_alcohol_abuse" dojotype="dijit.form.CheckBox" name="rf_alcohol_abuse"   value="on" type="checkbox" />
+		</td>
+        <td><label for="name">Alchohol Abuse </label></td>
+        </tr>
+
+        <tr>
+                <td colspan="2" align="center">
+			<input dojoType="dijit.form.TextBox" type='hidden' name='risk_planny_id' id='risk_planny_id' value=''>
+                        <button dojoType=dijit.form.Button type="submit" on>Save</button></td>
+        </tr>
+    </table>
+</div>
+
+
+
+
+
+
+	<h1>Plans</h1>
+	<div class="plansContainer">
+		<div class="gridContainer">
+			<div id="gridNode"></div>
+		</div>
+	</div>
+
+
+
+
+</body>
+</html>

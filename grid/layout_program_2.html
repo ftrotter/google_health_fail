@@ -1,0 +1,45 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+	<title>Programmatic Layout Sub-Rows</title>
+	<style type="text/css">
+		@import "dijit/themes/tundra/tundra.css";
+		@import "dojox/grid/resources/Grid.css";
+		@import "dojox/grid/resources/tundraGrid.css";
+		@import "general.css";
+	</style>
+	<script type="text/javascript" src="dojo/dojo.js" djConfig="isDebug:false, parseOnLoad: true"></script>
+	<script type="text/javascript">
+		dojo.require("dojo.data.ItemFileReadStore");
+		dojo.require("dojox.grid.DataGrid");
+
+		var jsonStore = new dojo.data.ItemFileReadStore({ url: "json/gaskets.json" });
+        var json = null;
+
+		dojo.addOnLoad(function(){
+			var layout = [[
+				{ field: "part_num", name: "Part Number", width: 'auto', rowSpan: 2 },
+				{ field: "min_temp", name: "Minimum Temperature", width: "100px" },
+				{ field: "max_temp", name: "Maximum Temperature", width: "100px" },
+				{ field: "type", name: "Type", width: "100px" }
+			],[
+				{ field: "thick", name: "Thickness", width: "5em", colSpan: 3 }
+			]];
+			var grid = new dojox.grid.DataGrid({
+				query: { part_num: '*' },
+				store: jsonStore,
+				structure: layout
+			}, 'gridNode');
+		});
+
+	</script>
+</head>
+<body class="tundra">
+	<h1>Gasket Lookup</h1>
+	<div class="partsContainer">
+		<div class="gridContainer">
+			<div id="gridNode"></div>
+		</div>
+	</div>
+</body>
+</html>

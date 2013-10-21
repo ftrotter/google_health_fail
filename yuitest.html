@@ -1,0 +1,75 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+  <head>
+  <link rel="stylesheet" type="text/css" href="yui/build/fonts/fonts-min.css" />
+  <link rel="stylesheet" type="text/css" href="yui/build/autocomplete/assets/skins/sam/autocomplete.css" />
+  <script type="text/javascript" src="yui/build/yahoo-dom-event/yahoo-dom-event.js"></script>
+  <script type="text/javascript" src="yui/build/connection/connection-min.js"></script>
+  <script type="text/javascript" src="yui/build/animation/animation-min.js"></script>  
+  <script type="text/javascript" src="yui/build/datasource/datasource-min.js"></script>
+  <script type="text/javascript" src="yui/build/autocomplete/autocomplete-min.js"></script>
+  </head>
+  <body class="yui-skin-sam">
+    
+    <h3>Add Title</h3>
+    <form action="" method="post">
+      Title:<br/>
+      <input type="text" name="Title[TitleName]" style="width:200px"/>
+      <p/>
+      Author:<br/>
+      <div style="width:200px">
+        <input id="Author[AuthorName][0]" type="text" name="Author[AuthorName][0]"/>
+        <div id="ac0"></div>
+      </div>
+      <p/><br/><p/>
+      Author:<br/>
+      <div style="width:200px">
+        <input id="Author[AuthorName][1]" type="text" name="Author[AuthorName][1]"/>
+        <div id="ac1"></div>
+      </div>
+      <p/><br/><p/>
+      Author:<br/>
+      <div style="width:200px">
+        <input id="Author[AuthorName][2]" type="text" name="Author[AuthorName][2]"/>
+        <div id="ac2"></div>
+      </div>
+      <p/><br/><p/>
+      <input type="submit" name="submit" value="Save" />
+    </form>    
+    
+    <script type="text/javascript">                
+      YAHOO.example.autocomplete = function() {
+        var oConfigs = {
+            prehighlightClassName: "yui-ac-prehighlight",
+            queryDelay: 0,
+            minQueryLength: 0,
+            animVert: .01,
+        }
+        
+        // instantiate remote data source
+        // code based on example at 
+        // http://developer.yahoo.com/yui/examples/autocomplete/ac_basic_xhr.html
+        var oDS = new YAHOO.util.XHRDataSource("get_authors.php"); 
+        oDS.responseType = YAHOO.util.XHRDataSource.TYPE_XML; 
+        oDS.responseSchema = { 
+           resultNode: 'author', 
+           fields: ['name']             
+        }; 
+        oDS.maxCacheEntries = 10;         
+    
+        // instantiate YUI autocomplete widgets
+        var oAC0 = new YAHOO.widget.AutoComplete("Author[AuthorName][0]", "ac0", oDS, oConfigs);          
+        var oAC1 = new YAHOO.widget.AutoComplete("Author[AuthorName][1]", "ac1", oDS, oConfigs);          
+        var oAC2 = new YAHOO.widget.AutoComplete("Author[AuthorName][2]", "ac2", oDS, oConfigs);
+        return {
+            oDS: oDS,
+            oAC0: oAC0,
+            oAC1: oAC1,
+            oAC2: oAC2
+        };
+      }();
+     </script>
+    
+  </body>
+</html>
+

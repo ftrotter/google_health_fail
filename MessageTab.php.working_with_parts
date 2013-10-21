@@ -1,0 +1,137 @@
+<?php
+require_once('Tab.class.php');
+
+class MessageTab extends Tab{
+
+	var $id = 'Message';
+	var $myTitle = 'Messages';
+
+
+	function getID(){
+		return $this->id;
+	}
+
+	function getTitle(){
+		return($this->myTitle);
+	}
+
+
+	function __construct(){
+
+
+
+	}
+
+
+	function getContent(){
+
+
+		$user_id = 1;
+
+		$return_me = "
+
+
+
+                <div dojoType='dijit.layout.BorderContainer' design='sidebar' liveSplitters='false' style=' width: 90%; height: 1000px'>
+                        <div dojoType='dijit.layout.ContentPane' region='leading' style='width: 130px;'>
+				<ul>
+					<li><a href='#' onclick=''> Inbox </a></li>
+					<li><a href='#' onclick=''>  Sent </a></li>
+				</ul>
+                        </div>
+
+<script type='text/javascript'>
+		var jsonStore = new dojo.data.ItemFileReadStore({ url: \"json/gaskets.json\" });
+</script>
+                        <div dojoType='dijit.layout.ContentPane' region='center' style=' padding: 10px;'>
+
+						<h2> Inbox </h2>
+
+        <div class='partsContainer'>
+        <div class='gridContainer'>
+
+	<table id='gridNode' jsId='grid' dojoType='dojox.grid.DataGrid'
+	       query=\"{ part_num: '*' }\" store='jsonStore'>
+		<thead>
+			<tr>
+				<th field='part_num'>From </th>
+				<th field='min_temp' width='100px'>To</th>
+
+				<th field='max_temp' width='100px'>Subject</th>
+				<th field='type' width='100px'>Regarding Patient</th>
+				<th field='thick' width='5em'>Sent</th>
+			</tr>
+		</thead>
+	</table>
+
+
+
+	</div></div>
+
+                        </div>
+                </div>
+
+
+			";
+/*
+			<table dojoType='dijit.Grid' data='store1' 
+				style='height: 500px; width: 300px;'>
+				<thead>
+					<tr>
+						<th attribute='Name' dataType='String'>Name</th>
+						<th field='DateAdded' dataType='Date' align='center'>Date Added</th>
+						<th field='NumAccounts' dataType='Number' sort='desc' align='center'># of accounts</th>
+						<th field='Description' dataType='html'>Description</th>
+					</tr>
+				</thead>
+			</table>
+*/
+
+
+		return($return_me);
+
+	}
+
+
+
+	function getSingleMessageContent(){
+
+		$email = $this->patient_email;
+		
+		$return_me = 
+			"
+<form action='google_send.php' method='post'>
+	<br>
+	<table width='100%'>
+		<tr>
+			<td width='30px'>Subject: </td>
+			<td><input type='text' id='subject' name='subject'><br></td>
+		<tr>
+			<td valign='top'>Message: </td>
+			<td>
+				<textarea name='html_message' width='600px' dojoType='dijit.Editor'>
+				        Your message text goes here!!
+				</textarea>
+			</td>
+		</tr>
+		<tr>
+			<td>
+			<input type='hidden' name='google_account' id='google_account' value='$email'>
+			<input type='submit' value='Send' />
+			</td>
+			<td>
+			</td>
+		</tr>
+	</table>
+</form>
+
+			";
+
+	return($return_me);
+
+
+	}
+}
+
+
+?>

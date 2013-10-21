@@ -1,0 +1,43 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+	<style type="text/css">
+		@import "dijit/themes/tundra/tundra.css";
+		@import "dojox/grid/resources/Grid.css";
+		@import "dojox/grid/resources/tundraGrid.css";
+		@import "general.css";
+	</style>
+	<script type="text/javascript" src="dojo/dojo.js" djConfig="isDebug:false, parseOnLoad: true"></script>
+	<script type="text/javascript">
+		dojo.require("dojo.data.ItemFileReadStore");
+		dojo.require("dojox.grid.DataGrid");
+
+		var jsonStore = new dojo.data.ItemFileReadStore({ url: "inbox_json.php" });
+	</script>
+</head>
+<body class="tundra">
+
+	<div class="messageContainer">
+	<div class="gridContainer">
+        <table id='gridNode' jsId='grid' dojoType='dojox.grid.DataGrid'
+               query="{ message_id: '*' }" store='jsonStore'>
+                <thead>
+                        <tr>
+                                <th field='from' width='100px'>From</th>
+                                <th field='to' width='100px'>To</th>
+                                <th field='subject' width='200px'>Subject</th>
+                                <th field='regarding' width='100px'>Regarding Patient</th>
+                                <th field='task_status' width='100px'>Task Status</th>
+                                <th field='sent' width='100px'>Sent</th>
+                        </tr>
+                </thead>
+        </table>
+
+
+
+	</div>
+
+	</div>
+</body>
+</html>
+

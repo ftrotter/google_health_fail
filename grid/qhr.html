@@ -1,0 +1,112 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+	<title>DataGrid Basic Editing</title>
+	<style type="text/css">
+		@import "dijit/themes/tundra/tundra.css";
+		@import "dojox/grid/resources/Grid.css";
+		@import "dojox/grid/resources/tundraGrid.css";
+		@import "general.css";
+	</style>
+	<script type="text/javascript" src="dojo/dojo.js" djConfig="isDebug:true"></script>
+	<script type="text/javascript">
+		dojo.require("dojo.data.ItemFileWriteStore");
+		dojo.require("dojox.grid.DataGrid");
+		dojo.require("dijit.form.Textarea");
+		var jsonStore = new dojo.data.ItemFileWriteStore({ url: "json/plans.json" });
+        var grid = null;
+
+		dojo.addOnLoad(function(){
+			var layout= [
+				{ field: "active", width: "70px", name: "Active", editable: true,
+				  type: dojox.grid.cells.Select, options: [ 'active', 'inactive' ] },
+				{ field: "plan_name", width: "150px", name: "Plan Name" },
+				{ field: "risk_factors", width: "100px", name: "Risk Factors"},
+				{ field: "intervention", width: "150px", name: "Interventions", formatter: myFormatter},
+				{ field: "goals", width: "150px", name: "Goals"},
+				{ field: "meds", width: "150px", name: "Medications"},
+				{ field: "owner", width: "100px", name: "Plan Owner"}
+			];
+
+			grid = new dojox.grid.DataGrid({
+				query: { planny_num: '*' },
+				store: jsonStore,
+				structure: layout,
+				rowsPerPage: 20,
+				selectionMode: 'single'
+			}, 'gridNode');
+		});
+
+        function myFormatter(my_arg){
+
+		return_me = "<textarea dojoType='dijit.form.Textarea' style='width:140px; height:150px'>"+my_arg+"</textarea>";
+
+		return return_me;
+
+	}
+
+
+	function makeRiskFactors (pk){
+	var chkBoxes = "<table id='forchecks_"+pk+"'> ";  
+	chkBoxes = chkBoxes +	"<tr><td><input id='cb_"+pk+"_1' dojotype='dijit.form.CheckBox' name='developer' checked='checked' value='off' type='checkbox' /> <label for='cb_"+pk+"_1'> Active Smoking </label> </td> ";
+	chkBoxes = chkBoxes +	"<td><input id='cb_"+pk+"_2' dojotype='dijit.form.CheckBox' name='developer' checked='checked' value='off' type='checkbox' /> <label for='cb_"+pk+"_2'> Passive Smoking </label> </td></tr>";
+	chkBoxes = chkBoxes +	"<tr><td><input id='cb_"+pk+"_3' dojotype='dijit.form.CheckBox' name='developer' checked='checked' value='off' type='checkbox' /> <label for='cb_"+pk+"_3'> Family Member Smoking </label> </td> ";
+	chkBoxes = chkBoxes +	"<td><input id='cb_"+pk+"_4' dojotype='dijit.form.CheckBox' name='developer' checked='checked' value='off' type='checkbox' /> <label for='cb_"+pk+"_4'> Low or Insurance </label></td></tr> ";
+	chkBoxes = chkBoxes +	"<tr><td><input id='cb_"+pk+"_5' dojotype='dijit.form.CheckBox' name='developer' checked='checked' value='off' type='checkbox' /> <label for='cb_"+pk+"_5'> Economic </label>  </td>";
+	chkBoxes = chkBoxes +	"<td><input id='cb_"+pk+"_6' dojotype='dijit.form.CheckBox' name='developer' checked='checked' value='off' type='checkbox' /> <label for='cb_"+pk+"_6'> Patient Refusal </label> </td></tr> ";
+	chkBoxes = chkBoxes +	"<tr><td><input id='cb_"+pk+"_7' dojotype='dijit.form.CheckBox' name='developer' checked='checked' value='off' type='checkbox' /> <label for='cb_"+pk+"_7'> Protocol not indicated/contra-indicated </label> </td> ";
+	chkBoxes = chkBoxes +	"<td><input id='cb_"+pk+"_8' dojotype='dijit.form.CheckBox' name='developer' checked='checked' value='off' type='checkbox' /> <label for='cb_"+pk+"_8'> Family History </label> </td></tr> ";
+	chkBoxes = chkBoxes +	"<tr><td><input id='cb_"+pk+"_9' dojotype='dijit.form.CheckBox' name='developer' checked='checked' value='off' type='checkbox' /> <label for='cb_"+pk+"_9'> Obesity </label> </td>";
+	chkBoxes = chkBoxes +	"<td><input id='cb_"+pk+"_10' dojotype='dijit.form.CheckBox' name='developer' checked='checked' value='off' type='checkbox' /> <label for='cb_"+pk+"_10'> Drug Abuse </label> </td></tr> ";
+	chkBoxes = chkBoxes +	"<tr><td><input id='cb_"+pk+"_11' dojotype='dijit.form.CheckBox' name='developer' checked='checked' value='off' type='checkbox' /> <label for='cb_"+pk+"_11'> Alcohol Abuse </label></td><td></td></tr> ";
+    	
+	chkBoxes = chkBoxes + "</table>";
+	return chkBoxes;
+}
+/*
+
+Depression
+	
+
+
+
+
+
+
+
+
+
+
+*/
+
+/*	
+	function makeRiskFactors (pk){
+	var chkBoxes = "<div id='forchecks_"+pk+"'> ";  
+	chkBoxes = chkBoxes +	"<input id='cb_"+pk+"_1' dojotype='dijit.form.CheckBox' name='developer' checked='checked' value='off' type='checkbox' /> <label for='cb_"+pk+"_1'> Active Smoking </label>  ";
+	chkBoxes = chkBoxes +	"<input id='cb_"+pk+"_2' dojotype='dijit.form.CheckBox' name='developer' checked='checked' value='off' type='checkbox' /> <label for='cb_"+pk+"_2'> Passive Smoking </label> <br>";
+	chkBoxes = chkBoxes +	"<input id='cb_"+pk+"_3' dojotype='dijit.form.CheckBox' name='developer' checked='checked' value='off' type='checkbox' /> <label for='cb_"+pk+"_3'> Family Member Smoking </label> <br> ";
+	chkBoxes = chkBoxes +	"<input id='cb_"+pk+"_4' dojotype='dijit.form.CheckBox' name='developer' checked='checked' value='off' type='checkbox' /> <label for='cb_"+pk+"_4'> Low or Insurance </label> ";
+	chkBoxes = chkBoxes +	"<input id='cb_"+pk+"_5' dojotype='dijit.form.CheckBox' name='developer' checked='checked' value='off' type='checkbox' /> <label for='cb_"+pk+"_5'> Economic </label>  <br>";
+	chkBoxes = chkBoxes +	"<input id='cb_"+pk+"_6' dojotype='dijit.form.CheckBox' name='developer' checked='checked' value='off' type='checkbox' /> <label for='cb_"+pk+"_6'> Patient Refusal </label> <br> ";
+	chkBoxes = chkBoxes +	"<input id='cb_"+pk+"_7' dojotype='dijit.form.CheckBox' name='developer' checked='checked' value='off' type='checkbox' /> <label for='cb_"+pk+"_7'> Protocol not indicated/contra-indicated </label> <br> ";
+	chkBoxes = chkBoxes +	"<input id='cb_"+pk+"_8' dojotype='dijit.form.CheckBox' name='developer' checked='checked' value='off' type='checkbox' /> <label for='cb_"+pk+"_8'> Family History </label> ";
+	chkBoxes = chkBoxes +	"<input id='cb_"+pk+"_9' dojotype='dijit.form.CheckBox' name='developer' checked='checked' value='off' type='checkbox' /> <label for='cb_"+pk+"_9'> Obesity </label> <br>";
+	chkBoxes = chkBoxes +	"<input id='cb_"+pk+"_10' dojotype='dijit.form.CheckBox' name='developer' checked='checked' value='off' type='checkbox' /> <label for='cb_"+pk+"_10'> Drug Abuse </label> ";
+	chkBoxes = chkBoxes +	"<input id='cb_"+pk+"_11' dojotype='dijit.form.CheckBox' name='developer' checked='checked' value='off' type='checkbox' /> <label for='cb_"+pk+"_11'> Alcohol Abuse </label> ";
+    	
+	chkBoxes = chkBoxes + "</div>";
+	return chkBoxes;
+}
+*/
+
+	</script>
+</head>
+<body class="tundra">
+	<h1>Plans</h1>
+	<div class="plansContainer">
+		<div class="gridContainer">
+			<div id="gridNode"></div>
+		</div>
+	</div>
+</body>
+</html>

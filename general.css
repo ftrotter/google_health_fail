@@ -1,0 +1,22 @@
+body {
+	padding:2em !important;
+}
+
+.messageContainer {
+	width:800px;
+}
+
+.messageContainer .gridContainer {
+	background:#fff;
+	height:550px;
+	
+}
+
+/*.partsContainer .gridContainer table {
+	width:475px;
+}*/
+
+
+.dojoxGrid-row-odd td {
+	background:#e8f2ff;
+}

@@ -1,0 +1,46 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+	<title>DataGrid Basic Editing</title>
+	<style type="text/css">
+		@import "dijit/themes/tundra/tundra.css";
+		@import "dojox/grid/resources/Grid.css";
+		@import "dojox/grid/resources/tundraGrid.css";
+		@import "general.css";
+	</style>
+	<script type="text/javascript" src="dojo/dojo.js" djConfig="isDebug:true"></script>
+	<script type="text/javascript">
+		dojo.require("dojo.data.ItemFileWriteStore");
+		dojo.require("dojox.grid.DataGrid");
+
+		var jsonStore = new dojo.data.ItemFileWriteStore({ url: "json/gaskets.json" });
+        var grid = null;
+
+		dojo.addOnLoad(function(){
+			var layout= [
+				{ field: "part_num", width: "auto", name: "Part Number" },
+				{ field: "min_temp", width: "100px", name: "Minimum Temperature" },
+				{ field: "max_temp", width: "100px", name: "Maximum Temperature" },
+				{ field: "type", width: "100px", name: "Type", editable: true,
+				  type: dojox.grid.cells.Select, options: [ '0', '1' ] },
+				{ field: "thick", width: "5em", name: "Thickness", editable: true }
+			];
+
+			grid = new dojox.grid.DataGrid({
+				query: { part_num: '*' },
+				store: jsonStore,
+				structure: layout,
+				rowsPerPage: 20
+			}, 'gridNode');
+		});
+	</script>
+</head>
+<body class="tundra">
+	<h1>Gasket Modification</h1>
+	<div class="partsContainer">
+		<div class="gridContainer">
+			<div id="gridNode"></div>
+		</div>
+	</div>
+</body>
+</html>

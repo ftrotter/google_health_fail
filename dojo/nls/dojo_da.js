@@ -1,0 +1,1 @@
+dojo.provide("dojo.nls.dojo_da");dojo.provide("dijit.nls.loading");dijit.nls.loading._built=true;dojo.provide("dijit.nls.loading.da");dijit.nls.loading.da={"loadingState":"Indlæser...","errorState":"Der er opstået en fejl"};dojo.provide("dojox.grid.nls.grid");dojox.grid.nls.grid._built=true;dojo.provide("dojox.grid.nls.grid.da");dojox.grid.nls.grid.da={"noData":"No Data"};

@@ -1,0 +1,40 @@
+<html>
+<head>
+<title></title>
+	
+	<style type='text/css'>
+		@import 'https://qhrdev.healthquilt.org/qhr/dijit/themes/tundra/tundra.css';
+		@import 'https://qhrdev.healthquilt.org/qhr/dojox/grid/resources/Grid.css';
+		@import 'https://qhrdev.healthquilt.org/qhr/dojox/grid/resources/tundraGrid.css';
+		@import 'https://qhrdev.healthquilt.org/qhr/dojo/resources/dojo.css';
+	</style>
+
+  
+
+
+
+	<script type='text/javascript' src='dojo/dojo.js' djConfig='parseOnLoad: true'></script>
+	<script type='text/javascript'>
+		dojo.require('dijit.layout.ContentPane');
+       		dojo.require('dijit.layout.TabContainer');
+       		dojo.require('dijit.form.Button');
+       		dojo.require('dojo.parser');
+
+
+	</script>
+</head> <body class='tundra'> 
+
+
+<div>
+    <div dojoType='dijit.layout.TabContainer' id='protocol_sub_tab_interface' style="width:500px;height:100px">
+
+		<div dojoType='dijit.layout.ContentPane' id='content_Diabetes'   title='Diabetes'>
+			Something here 
+        		<br />
+		</div>
+		<div dojoType='dijit.layout.ContentPane' id='content_Major Depression'   title='Major Depression'>
+		 	And Something here
+		</div>
+	</div>
+</div>
+</body></html>

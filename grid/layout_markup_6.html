@@ -1,0 +1,88 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+	<title>Gasket Lookup</title>
+	<style type="text/css">
+		@import "dijit/themes/tundra/tundra.css";
+		@import "dojox/grid/resources/Grid.css";
+		@import "dojox/grid/resources/tundraGrid.css";
+		@import "general.css";
+	</style>
+	<script type="text/javascript" src="dojo/dojo.js" djConfig="isDebug:false, parseOnLoad: true"></script>
+	<script type="text/javascript">
+		dojo.require("dojo.data.ItemFileReadStore");
+		dojo.require("dojox.grid.DataGrid");
+
+		var jsonStore = new dojo.data.ItemFileReadStore({ url: "json/gaskets.json" });
+
+		function formatDegrees(value){
+			if(value == this.value){
+				return value;
+			}
+			return value + '&deg;';
+		}
+
+		function formatType(value){
+			if(value == this.value){
+				return value;
+			}
+			switch(value){
+				case 0:
+					return "<img src='gasket_ring.png' alt='Ring' width='64' height='64'/>";
+				case 1:
+					return "<img src='gasket_full_face.png' alt='Full Face' width='64' height='64'/>";
+			}
+		}
+
+		// adapted from http://www.yaldex.com/FSCalculators/LcmAndGcd.htm
+		function getGCD(num, den){
+			var a=num, b=den;
+			for(var c=a%b; c!=0; c=a%b, a=b, b=c, c=a%b);
+			return b;
+		}
+
+		// adapted from http://www.webdeveloper.com/forum/archive/index.php/t-18205.html
+		function formatFraction(value){
+			if(value == this.value){
+				return value;
+			}
+			var parts = String(value).split('.');
+			if(parts.length<2){
+				return String(value);
+			}
+
+			var whole = parseInt(parts[0]);
+			var decimal = parseInt(parts[1],10);
+			var power = Math.pow(10, parts[1].length);
+
+			var gcd = getGCD(decimal, power);
+
+			return ((whole==0)?"":whole+" ")+decimal/gcd+"/"+power/gcd+"&quot;";
+		}
+	</script>
+</head>
+<body class="tundra">
+	<h1>Gasket Lookup</h1>
+	<div class="partsContainer">
+	<div class="gridContainer">
+	<table id="gridNode" jsId="grid" dojoType="dojox.grid.DataGrid"
+	       query="{ part_num: '*' }" store="jsonStore">
+		<colgroup span="2" noscroll="true" width="200px"></colgroup>
+		<colgroup span="6"></colgroup>
+		<thead>
+			<tr>
+				<th field="part_num" width="auto">Part Number</th>
+				<th field="type" formatter="formatType" width="auto">Type</th>
+				<th field="thick" formatter="formatFraction">Thickness</th>
+				<th field="inner" formatter="formatFraction">I.D.</th>
+				<th field="outer" formatter="formatFraction">O.D.</th>
+				<th field="min_temp" formatter="formatDegrees">Min. Temp. (F)</th>
+				<th field="max_temp" formatter="formatDegrees">Max. Temp. (F)</th>
+				<th field="max_pres">Max. Pressure</th>
+			</tr>
+		</thead>
+	</table>
+	</div>
+	</div>
+</body>
+</html>

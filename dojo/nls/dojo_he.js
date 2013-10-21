@@ -1,0 +1,1 @@
+dojo.provide("dojo.nls.dojo_he");dojo.provide("dijit.nls.loading");dijit.nls.loading._built=true;dojo.provide("dijit.nls.loading.he");dijit.nls.loading.he={"loadingState":"טעינה...","errorState":"אירעה שגיאה"};dojo.provide("dojox.grid.nls.grid");dojox.grid.nls.grid._built=true;dojo.provide("dojox.grid.nls.grid.he");dojox.grid.nls.grid.he={"noData":"No Data"};
